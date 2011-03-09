@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>AsgDownloadHelper Extension Options</title>
+</head>
+<script type="text/javascript" src="jquery-1.4.2.min.js"></script>
+<script type="text/javascript" src="default_options.js"></script>
+<script type="text/javascript" src="localstorage.js"></script>
+
+<script type="text/javascript">
+
+// Saves options to localStorage.
+function save_options() {
+	var options = get_storage();
+	options.is_copy_clipboard = $("#is_copy_clipboard")[0].checked ? '1' : '0';
+	options.is_add_extension = $("#is_add_extension")[0].checked ? '1' : '0';
+	options.filename_prefix = $("#filename_prefix").val();
+	
+	//alert(options.my_bg_color);
+	set_storage(options);
+	
+	// Update status to let user know options were saved.
+	var status = document.getElementById("status");
+	status.innerHTML = "保存しました。";
+	setTimeout(function() {
+		status.innerHTML = "";
+	}, 750);
+}
+
+// Restores select box state to saved value from localStorage.
+function restore_options() {
+	var options = get_storage();
+
+	if (!options) {
+    	return;
+  	}
+
+  	$("#is_copy_clipboard")[0].checked = options.is_copy_clipboard=='1';
+  	$("#is_add_extension")[0].checked = options.is_add_extension=='1';
+  	$("#filename_prefix").val(options.filename_prefix);
+}
+
+</script>
+
+<body onload="restore_options()">
+<p>クリップボードにコピーする:<input type="checkbox" id="is_copy_clipboard"></p>
+<p>コピーする際、拡張子を追加する:<input type="checkbox" id="is_add_extension"></p>
+<p>コピーする際、ファイル名の先頭に付与する文字列:<input type="text" id="filename_prefix" size="100"><br/>
+保存するディレクトリのパス等（例：C:\downloads\xxx\）</p>
+<hr>
+<div id="status"></div>
+<button onclick="save_options()">保存</button>
+</body>
+</html>

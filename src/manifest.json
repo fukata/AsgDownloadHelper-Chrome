@@ -1,0 +1,14 @@
+{
+   "name": "AsgDownloadHelper",
+   "version": "1.6.0",
+   "permissions": ["tabs", "http://asg.to/*", "http://search.asg.to/*"],
+   "background_page": "background.html",
+   "options_page":"options.html",
+   "content_scripts": [
+	    {
+	      "matches": ["http://asg.to/*", "http://search.asg.to/*"],
+	      "css": ["jquery-ui-1.8.2.custom.css", "content_scripts.css"],
+	      "js": ["jquery-1.4.2.min.js", "jquery-ui-1.8.2.custom.min.js", "content_scripts.js"]
+	    }
+    ]
+}
