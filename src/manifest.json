@@ -1,7 +1,7 @@
 {
    "name": "AsgDownloadHelper",
    "version": "1.6.0",
-   "permissions": ["tabs", "http://asg.to/*", "http://search.asg.to/*"],
+   "permissions": ["tabs", "http://asg.to/*", "https://secure.asg.to/*"],
    "background_page": "background.html",
    "options_page":"options.html",
    "content_scripts": [
