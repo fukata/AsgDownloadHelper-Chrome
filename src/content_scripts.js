@@ -58,6 +58,9 @@ function doRecommendDialog(event) {
 }
 
 function cleanKeyword(keyword) {
+	keyword = keyword.replace(/〜?\(?【?(前編|後編)】?\)?〜?/g, " ");
+	keyword = keyword.replace(/〜?\(?【?(前半|後半)】?\)?〜?/g, " ");
+	
 	keyword = keyword.replace(/〜?その[零壱弐参四伍陸漆捌玖]+〜?/g, " ");
 	keyword = keyword.replace(/〜?その[零一二三四五六七八九]+〜?/g, " ");
 	keyword = keyword.replace(/〜?その[0-9]+〜?/g, " ");
