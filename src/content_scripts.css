@@ -7,6 +7,11 @@ span.adh_download {
 	text-align: left;
 }
 
+.ui-dialog-content > div.results {
+	max-height: 400px;
+	overflow-y: auto; 
+}
+
 span.elapsed {
 	color: #FF0000;
 }

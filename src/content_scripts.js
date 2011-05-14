@@ -76,8 +76,8 @@ function calcElapsedDays(publicTime) {
 	var now = new Date();
 	
 	var year = "20" + publicTime.substring(0,2);
-	var month = publicTime.substring(2,2);
-	var day = publicTime.substring(4,2);
+	var month = publicTime.substring(3,5);
+	var day = publicTime.substring(6,8);
 	var uploadDate = new Date(year+"/"+month+"/"+day+' '+now.getHours()+':'+now.getMinutes()+':'+now.getSeconds());
 	var days = Math.floor( ( now.getTime() - uploadDate.getTime() ) / ( 24*60*60*1000 ) ) || 0;
 	return days;
@@ -110,7 +110,7 @@ function processAttachRecMovieList($dialog, keyword, page) {
 				
 				window.console.log('movie: publicTime='+publicTime+', title='+title+', url='+url);
 				var $movie = $('<div></div>');
-				$movie.append('<img src="'+$img.attr('src')+'" align="left" width="70" height="70"/>'+title+' ('+publicTime+')'+'<br/>')
+				$movie.append('<img src="'+$img.attr('src')+'" align="left" width="70" height="70"/><a href="'+url+'" target="_blank" class="agh_dialog_link">'+title+'</a> ('+publicTime+')'+'<br/>')
 					.append(createDlElement(url)).append(elapsedDom + '<br clear="all"/>');
 				$dialog.find('.results').append($movie);
 				appendCount++;
@@ -147,9 +147,6 @@ function removeScriptTag(html) {
 		window.console.log('html.length='+html.length);
 	}
 	return html;
-}
-
-function getMoreRecommend(url, page) {
 }
 
 // URLに遷移する。
@@ -228,7 +225,7 @@ function attachAghElements(rootNode) {
 		$("a",rootNode).each(function() {
 			var url = $(this).attr('href');
 			// 動画詳細ページへのリンクかつ、imgタグに対するリンクではない場合
-			if (url.match(G_RE) && $(this).find('img').length==0) {
+			if (url.match(G_RE) && !$(this).hasClass('agh_dialog_link') && $(this).find('img').length==0) {
 				$(this).after(createAghElement(url));
 			}
 		});
