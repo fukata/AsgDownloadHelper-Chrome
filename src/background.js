@@ -36,7 +36,7 @@ function getMoreRecommend(keyword, page) {
 	params.keyword = keyword;
 	params.page = page;
 	
-	var url = 'http://search.asg.to/search';
+	var url = 'http://asg.to/search';
 	jQuery.ajax({
 		'async': false
 		,'type': 'GET'
@@ -46,7 +46,7 @@ function getMoreRecommend(keyword, page) {
 		,'success': function(html) {
 			params.success = true;
 			params.movies = new Array();
-			params.html = html;
+			params.html = html || "";
 		}
 		,'error': function(request, status, thrown) {
 			params.success = false;

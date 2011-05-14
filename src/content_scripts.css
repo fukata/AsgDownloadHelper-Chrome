@@ -6,3 +6,7 @@ span.adh_download {
 .ui-dialog-content {
 	text-align: left;
 }
+
+span.elapsed {
+	color: #FF0000;
+}

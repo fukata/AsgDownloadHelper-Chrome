@@ -38,7 +38,7 @@ function doRecommendDialog(event) {
 			processAttachRecMovieList($dialog, keyword, page);
 		}}
 	});
-	$dialog.html('<ol class="results"></ol>');
+	$dialog.html('<div class="results"></div>');
 	$dialog.dialog('open');
 	
 	chrome.extension.sendRequest({"type": "parse", "url":event.data.url}, function(response) {
@@ -57,8 +57,36 @@ function doRecommendDialog(event) {
 	});
 }
 
+function cleanKeyword(keyword) {
+	keyword = keyword.replace(/〜?その[零壱弐参四伍陸漆捌玖]+〜?/g, " ");
+	keyword = keyword.replace(/〜?その[零一二三四五六七八九]+〜?/g, " ");
+	keyword = keyword.replace(/〜?その[0-9]+〜?/g, " ");
+	
+	keyword = keyword.replace(/\([零壱弐参四伍陸漆捌玖]+\)/g, " ");
+	keyword = keyword.replace(/\([零一二三四五六七八九]+\)/g, " ");
+	keyword = keyword.replace(/\([0-9]+\)/g, " ");
+	
+	keyword = keyword.replace(/[零壱弐参四伍陸漆捌玖]+/g, " ");
+	keyword = keyword.replace(/[零一二三四五六七八九]+/g, " ");
+	keyword = keyword.replace(/[0-9]+/g, " ");
+	return keyword;
+}
+
+function calcElapsedDays(publicTime) {
+	var now = new Date();
+	
+	var year = "20" + publicTime.substring(0,2);
+	var month = publicTime.substring(2,2);
+	var day = publicTime.substring(4,2);
+	var uploadDate = new Date(year+"/"+month+"/"+day+' '+now.getHours()+':'+now.getMinutes()+':'+now.getSeconds());
+	var days = Math.floor( ( now.getTime() - uploadDate.getTime() ) / ( 24*60*60*1000 ) ) || 0;
+	return days;
+}
+
 function processAttachRecMovieList($dialog, keyword, page) {
 	window.console.log('keyword='+keyword);
+	keyword = cleanKeyword(keyword);
+	window.console.log('cleaned keyword='+keyword);
 	window.console.log('page='+page);
 	chrome.extension.sendRequest({"type": "more", "keyword":keyword, "page":page}, function(response) {
 		var params = response;
@@ -68,19 +96,23 @@ function processAttachRecMovieList($dialog, keyword, page) {
 			window.console.log('formated html.length='+html.length);
 			$tmpDom = $(html);
 			var appendCount = 0;
-			$tmpDom.find("#list div[class='']").each(function(){
+			$tmpDom.find("div.internal-movie").each(function(){
 				var $self = $(this);
 				var $img = $self.find('img.shift-left').first();
 				var title = $img.attr('alt');
 				var url = $img.parent('a').attr('href');
 				var $info = $self.children('div.list-info').first();
 				var publicTime = $info.children('p').first().text();
-				publicTime = publicTime.substring(0,19);
+				publicTime = publicTime.substring(0,14);
+				var elapsedDays = calcElapsedDays(publicTime);
+				console.log("elapsedDays: %s", elapsedDays);
+				var elapsedDom = elapsedDays>=100 ? '<span class="elapsed">100日以上経過</span>' : '';
 				
 				window.console.log('movie: publicTime='+publicTime+', title='+title+', url='+url);
-				var $li = $('<li></li>');
-				$li.append(title+' ('+publicTime+')').append(createDlElement(url));
-				$dialog.find('.results').append($li);
+				var $movie = $('<div></div>');
+				$movie.append('<img src="'+$img.attr('src')+'" align="left" width="70" height="70"/>'+title+' ('+publicTime+')'+'<br/>')
+					.append(createDlElement(url)).append(elapsedDom + '<br clear="all"/>');
+				$dialog.find('.results').append($movie);
 				appendCount++;
 			});
 			if (appendCount>0) {
