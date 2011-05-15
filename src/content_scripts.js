@@ -58,6 +58,8 @@ function doRecommendDialog(event) {
 }
 
 function generateRecommendKeyword(keyword) {
+	keyword = keyword.replace(/\- アダルト動画 裏アゲサゲ－無料アダルト動画－/g, " ");
+	
 	keyword = keyword.replace(/〜?\(?【?(前編|後編)】?\)?〜?/g, " ");
 	keyword = keyword.replace(/〜?\(?【?(前半|後半)】?\)?〜?/g, " ");
 	
