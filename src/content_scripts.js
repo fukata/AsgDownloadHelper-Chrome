@@ -89,7 +89,7 @@ function calcElapsedDays(publicTime) {
 function processAttachRecMovieList($dialog, keyword, page) {
 	window.console.log('keyword='+keyword);
 	keyword = generateRecommendKeyword(keyword);
-	window.console.log('cleaned keyword='+keyword);
+	window.console.log('recommend keyword='+keyword);
 	window.console.log('page='+page);
 	
 	if ($dialog.find('.results p.searching').size()==0) {
