@@ -21,7 +21,7 @@ function doRecommendDialog(event) {
 	var $win = $(document.createElement('div'));
 	var pos = $(this).position();
 	var $dialog = $win.dialog({
-		'title':'関連動画'
+		'title':'動画情報取得中...'
 		,'autoOpen':false
 		,'position':['left','top']
 		,'width':'450px'
@@ -57,7 +57,7 @@ function doRecommendDialog(event) {
 	});
 }
 
-function cleanKeyword(keyword) {
+function generateRecommendKeyword(keyword) {
 	keyword = keyword.replace(/〜?\(?【?(前編|後編)】?\)?〜?/g, " ");
 	keyword = keyword.replace(/〜?\(?【?(前半|後半)】?\)?〜?/g, " ");
 	
@@ -88,10 +88,18 @@ function calcElapsedDays(publicTime) {
 
 function processAttachRecMovieList($dialog, keyword, page) {
 	window.console.log('keyword='+keyword);
-	keyword = cleanKeyword(keyword);
+	keyword = generateRecommendKeyword(keyword);
 	window.console.log('cleaned keyword='+keyword);
 	window.console.log('page='+page);
+	
+	if ($dialog.find('.results p.searching').size()==0) {
+		$dialog.find('.results').append('<p class="searching">検索中...</p>');
+	}
+	$dialog.find('.results p.agh_dialog_notfound').remove();
+	
 	chrome.extension.sendRequest({"type": "more", "keyword":keyword, "page":page}, function(response) {
+		$dialog.find('.results p.searching').remove();
+		
 		var params = response;
 		if (params.success) {
 			window.console.log('more success.');
@@ -112,7 +120,7 @@ function processAttachRecMovieList($dialog, keyword, page) {
 				var elapsedDom = elapsedDays>=100 ? '<span class="elapsed">100日以上経過</span>' : '';
 				
 				window.console.log('movie: publicTime='+publicTime+', title='+title+', url='+url);
-				var $movie = $('<div></div>');
+				var $movie = $('<div class="agh_dialog_movie"></div>');
 				$movie.append('<img src="'+$img.attr('src')+'" align="left" width="70" height="70"/><a href="'+url+'" target="_blank" class="agh_dialog_link">'+title+'</a> ('+publicTime+')'+'<br/>')
 					.append(createDlElement(url)).append(elapsedDom + '<br clear="all"/>');
 				$dialog.find('.results').append($movie);
@@ -121,6 +129,13 @@ function processAttachRecMovieList($dialog, keyword, page) {
 			if (appendCount>0) {
 				var page = params.page + 1;
 				$dialog.attr('page', page);
+			} else {
+				if ($dialog.find('.results div.agh_dialog_movie').size()==0) {
+					$dialog.find('.results').html('<p class="agh_dialog_notfound">関連動画が見つかりませんでした。</p>');
+				} else {
+					$dialog.find('.results p.agh_dialog_notfound').remove();
+					$dialog.find('.results').append('<p class="agh_dialog_notfound">関連動画が見つかりませんでした。</p>');
+				}
 			}
 		} else {
 			window.console.log('more failed.');
