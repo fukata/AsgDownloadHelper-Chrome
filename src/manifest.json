@@ -8,7 +8,8 @@
 	    {
 	      "matches": ["http://asg.to/*", "https://secure.asg.to/*"],
 	      "css": ["jquery-ui-1.8.2.custom.css", "content_scripts.css"],
-	      "js": ["jquery-1.4.2.min.js", "jquery-ui-1.8.2.custom.min.js", "content_scripts.js"]
+	      "js": ["jquery-1.4.2.min.js", "jquery-ui-1.8.2.custom.min.js", "content_scripts.js"],
+		  "run_at": "document_end"
 	    }
     ]
 }

@@ -8,6 +8,7 @@ function doDownload(event) {
 		var params = response;
 		if (params.success) {
 			if (G_OPTIONS.is_copy_clipboard=='1') {
+				console.log("clip: %s", G_OPTIONS.filename_prefix+params.filename);
 				chrome.extension.sendRequest({"type": "clip", "text":G_OPTIONS.filename_prefix+params.filename}, function() {});
 			}
 			fowardUrl(params.flv);
@@ -44,14 +45,14 @@ function doRecommendDialog(event) {
 	chrome.extension.sendRequest({"type": "parse", "url":event.data.url}, function(response) {
 		var params = response;
 		if (params.success) {
-			window.console.log('parse success.');
+			console.log('parse success.');
 			$dialog.dialog( "option", "title", '【'+params.title+'】の関連動画' );
 			$dialog.attr('movie-title', params.title);
 			$dialog.attr('page', 1);
 			processAttachRecMovieList($dialog, params.title, 1);
 		} else {
 			// 取得失敗
-			window.console.log('parse failed.');
+			console.log('parse failed.');
 			$dialog.html('動画情報の取得に失敗しました。');
 		}
 	});
@@ -89,10 +90,10 @@ function calcElapsedDays(publicTime) {
 }
 
 function processAttachRecMovieList($dialog, keyword, page) {
-	window.console.log('keyword='+keyword);
+	console.log('keyword='+keyword);
 	keyword = generateRecommendKeyword(keyword);
-	window.console.log('recommend keyword='+keyword);
-	window.console.log('page='+page);
+	console.log('recommend keyword='+keyword);
+	console.log('page='+page);
 	
 	if ($dialog.find('.results p.searching').size()==0) {
 		$dialog.find('.results').append('<p class="searching">検索中...</p>');
@@ -104,9 +105,9 @@ function processAttachRecMovieList($dialog, keyword, page) {
 		
 		var params = response;
 		if (params.success) {
-			window.console.log('more success.');
+			console.log('more success.');
 			var html = formatHtml(params.html);
-			window.console.log('formated html.length='+html.length);
+			console.log('formated html.length='+html.length);
 			$tmpDom = $(html);
 			var appendCount = 0;
 			$tmpDom.find("div.internal-movie").each(function(){
@@ -121,7 +122,7 @@ function processAttachRecMovieList($dialog, keyword, page) {
 				console.log("elapsedDays: %s", elapsedDays);
 				var elapsedDom = elapsedDays>=100 ? '<span class="elapsed">100日以上経過</span>' : '';
 				
-				window.console.log('movie: publicTime='+publicTime+', title='+title+', url='+url);
+				console.log('movie: publicTime='+publicTime+', title='+title+', url='+url);
 				var $movie = $('<div class="agh_dialog_movie"></div>');
 				$movie.append('<img src="'+$img.attr('src')+'" align="left" width="70" height="70"/><a href="'+url+'" target="_blank" class="agh_dialog_link">'+title+'</a> ('+publicTime+')'+'<br/>')
 					.append(createDlElement(url)).append(elapsedDom + '<br clear="all"/>');
@@ -140,7 +141,7 @@ function processAttachRecMovieList($dialog, keyword, page) {
 				}
 			}
 		} else {
-			window.console.log('more failed.');
+			console.log('more failed.');
 			$dialog.html('動画情報の取得に失敗しました。');
 		}
 	});
@@ -158,13 +159,13 @@ function removeScriptTag(html) {
 	while (true) {
 		var startIndex = html.indexOf('<script');
 		var endIndex = html.indexOf('</script>', startIndex);
-		window.console.log('removeScriptTag: startIndex='+startIndex+', endIndex='+endIndex);
+		console.log('removeScriptTag: startIndex='+startIndex+', endIndex='+endIndex);
 		if (startIndex < 0) {
 			break;
 		}
 		endIndex = endIndex + '</script>'.length;
 		html = html.replace(html.substring(startIndex, endIndex), '');
-		window.console.log('html.length='+html.length);
+		console.log('html.length='+html.length);
 	}
 	return html;
 }
@@ -273,4 +274,4 @@ function init() {
 	});
 }
 
-$(document.body).ready(init);
+init();
