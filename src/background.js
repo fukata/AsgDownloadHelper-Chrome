@@ -13,7 +13,7 @@ function parseFlv(detailUrl) {
 	var options = get_storage();
 	res = getVideoDetail(detailUrl);
 	if (res) {
-		params.title = res['videoTitle0'];
+		params.title = removeCharactersOfTitle(res['videoTitle0']);
 		params.flv = res['videoUrl0'];
 		params.filename = options.is_add_extension=='1' ? params.title+".flv" : params.title;
 		params.success = true;
@@ -24,6 +24,15 @@ function parseFlv(detailUrl) {
 	}
 	
 	return params;
+}
+
+/**
+ * 動画タイトルから不要な文字列を削除
+ * @param title
+ */
+function removeCharactersOfTitle(title) {
+    title = title.replace(" - アダルト動画 裏アゲサゲ−無料アダルト動画−", "");
+    return title;
 }
 
 /**
